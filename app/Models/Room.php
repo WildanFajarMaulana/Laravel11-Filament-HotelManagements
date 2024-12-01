@@ -23,7 +23,7 @@ class Room extends Model
        'status'
     ];
 
-   public function setNameAttribute($value)
+   public function setRoomNameAttribute($value)
    {
        $this->attributes['room_name'] = $value;
        $this->attributes['room_slug'] = Str::slug($value);

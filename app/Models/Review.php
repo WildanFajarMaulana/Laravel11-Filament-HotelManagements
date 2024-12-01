@@ -21,11 +21,11 @@ class Review extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'category_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function room(): BelongsTo
     {
-        return $this->belongsTo(Room::class, 'category_id');
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }

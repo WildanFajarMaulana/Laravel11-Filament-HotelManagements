@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,11 +15,12 @@ class Payment extends Model
         'reservation_id',
         'payment_method',
         'amount',
-        'payment_status'
+        'payment_status',
+        'proof'
      ];
  
-    public function reservation(): HasOne
+    public function reservation(): BelongsTo
      {
-         return $this->HasOne(Reservation::class, 'category_id');
+         return $this->belongsTo(Reservation::class, 'reservation_id');
      }
 }

@@ -18,6 +18,6 @@ class RoomFacility extends Model
 
     public function room(): BelongsTo
     {
-        return $this->belongsTo(Room::class, 'category_id');
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }
