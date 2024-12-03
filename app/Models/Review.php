@@ -14,7 +14,6 @@ class Review extends Model
     protected $fillable = [
        'user_id',
        'room_id',
-       'amount',
        'rating',
        'review_text'
     ];

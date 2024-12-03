@@ -28,10 +28,6 @@ class ReviewsRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('amount')
-                    ->required()
-                    ->numeric(),
-
                 Forms\Components\TextInput::make('rating')
                     ->required()
                     ->numeric(),
@@ -64,6 +60,14 @@ class ReviewsRelationManager extends RelationManager
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
             ]);
     }
 }

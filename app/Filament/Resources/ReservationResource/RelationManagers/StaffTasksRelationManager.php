@@ -82,4 +82,12 @@ class StaffTasksRelationManager extends RelationManager
                 ]),
             ]);
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 }
