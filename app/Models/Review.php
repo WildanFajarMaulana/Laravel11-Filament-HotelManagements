@@ -12,6 +12,7 @@ class Review extends Model
     use SoftDeletes;
 
     protected $fillable = [
+       'reservation_id',
        'user_id',
        'room_id',
        'rating',

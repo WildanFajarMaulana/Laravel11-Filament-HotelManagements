@@ -101,7 +101,7 @@ class ReservationController extends Controller
         }
 
         // Ambil riwayat reservasi berdasarkan user_id
-        $reservations = Reservation::with('room') // Memuat relasi room
+        $reservations = Reservation::with('room.reviews') // Memuat relasi room
                                     ->where('user_id', $userId)
                                     ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pembuatan
                                     ->get();

@@ -15,8 +15,8 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/rooms', [RoomController::class, 'index']);
 Route::get('/rooms/{slug}', [RoomController::class, 'roomDetail']);
-Route::middleware('auth:sanctum')->post('/create-rating', [RoomController::class, 'createRating']);
+Route::middleware('auth:sanctum')->post('/create-rating/{reservation_id}', [RoomController::class, 'createRating']);
 
 Route::middleware('auth:sanctum')->post('/create-reservation', [ReservationController::class, 'createReservation']);
 Route::middleware('auth:sanctum')->get('/history-reservation', [ReservationController::class, 'historyReservationByUser']);
-Route::middleware('auth:sanctum')->get('/cancel-reservation/{reservation_id}', [ReservationController::class, 'cancelReservation']);
+Route::middleware('auth:sanctum')->post('/cancel-reservation/{reservation_id}', [ReservationController::class, 'cancelReservation']);
