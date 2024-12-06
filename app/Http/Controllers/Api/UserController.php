@@ -56,7 +56,7 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -64,7 +64,7 @@ class UserController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
+    
         // Cek kredensial
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
@@ -72,13 +72,21 @@ class UserController extends Controller
                 'message' => 'Invalid credentials',
             ], 401);
         }
-
+    
         // Ambil user yang login
         $user = Auth::user();
-
+    
+        // Cek apakah user memiliki role 'customer'
+        if ($user->role !== 'customer') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized - Only customers are allowed to login',
+            ], 403); // 403 Forbidden jika bukan customer
+        }
+    
         // Buat token untuk user
         $token = $user->createToken('API Token')->plainTextToken;
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
@@ -86,4 +94,5 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+    
 }

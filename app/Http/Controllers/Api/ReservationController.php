@@ -93,7 +93,7 @@ class ReservationController extends Controller
 
     public function historyReservationByUser(Request $request)
     {
-        $userId = Auth::id();
+        $userId = $request->user()->id;
         // Validasi apakah user_id valid
         $user = User::find($userId);
         if (!$user) {
