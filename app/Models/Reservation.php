@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,8 +60,13 @@ class Reservation extends Model
         static::creating(function ($reservation) {
             $room = $reservation->room;
             if ($room) {
-                // Set harga sesuai dengan harga kamar yang dipilih
-                $reservation->total_price = $room->price_per_night;
+                 // Hitung jumlah hari menginap berdasarkan check-in dan check-out
+                $checkInDate = Carbon::parse($reservation->check_in_date);
+                $checkOutDate = Carbon::parse($reservation->check_out_date);
+                $days = $checkInDate->diffInDays($checkOutDate);
+                
+                // Set total_price sesuai dengan harga kamar dan jumlah hari menginap
+                $reservation->total_price = $room->price_per_night * $days;
                 
                 // Set status kamar baru menjadi 'booked'
                 $room->status = 'booked';
@@ -74,8 +80,14 @@ class Reservation extends Model
             $previousRoom = Room::find($reservation->getOriginal('room_id')); // Ambil room_id sebelumnya
     
             if ($room) {
+                // Hitung jumlah hari menginap berdasarkan check-in dan check-out
+                $checkInDate = Carbon::parse($reservation->check_in_date);
+                $checkOutDate = Carbon::parse($reservation->check_out_date);
+                $days = $checkInDate->diffInDays($checkOutDate);
+                
                 // Update total_price berdasarkan harga kamar yang baru dipilih
-                $reservation->total_price = $room->price_per_night;
+                $reservation->total_price = $room->price_per_night * $days;
+
     
                 // Jika kamar yang dipilih berbeda, update status kamar
                 if ($previousRoom && $previousRoom->id !== $room->id) {

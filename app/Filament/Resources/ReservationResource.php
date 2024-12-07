@@ -73,8 +73,7 @@ class ReservationResource extends Resource
                                 ->live()
                                 ->afterStateUpdated(function ($state, callable $set) {
                                     $room = Room::find($state);
-                                    $set('total_price', $room ? $room->price_per_night : 0);
-                                    $set('payment.amount', $room ? $room->price_per_night : 0);
+                                    $set('price_per_night', $room ? $room->price_per_night : 0);
                                 })
                                 ->rules(function (callable $get) {
                                     // Ambil room_id yang sedang dipilih
@@ -112,6 +111,18 @@ class ReservationResource extends Resource
                                                 ->danger()
                                                 ->send();
                                         }
+
+                                         // Hitung jumlah hari menginap dan total price
+                                         $checkInDate = Carbon::parse($state);
+                                         $checkOutDate = Carbon::parse($get('check_out_date'));
+                                         if ($checkInDate && $checkOutDate) {
+                                             $days = $checkInDate->diffInDays($checkOutDate);
+                                             $room = Room::find($get('room_id'));
+                                             if ($room) {
+                                                 $totalPrice = $room->price_per_night * $days;
+                                                 $set('payment.amount', $totalPrice); // Update total price
+                                             }
+                                         }
                                     }),
 
                                 Forms\Components\DatePicker::make('check_out_date')
@@ -127,6 +138,18 @@ class ReservationResource extends Resource
                                                 ->danger()
                                                 ->send();
                                         }
+
+                                          // Hitung jumlah hari menginap dan total price
+                                          $checkInDate = Carbon::parse($get('check_in_date'));
+                                          $checkOutDate = Carbon::parse($state);
+                                          if ($checkInDate && $checkOutDate) {
+                                              $days = $checkInDate->diffInDays($checkOutDate);
+                                              $room = Room::find($get('room_id'));
+                                              if ($room) {
+                                                  $totalPrice = $room->price_per_night * $days;
+                                                  $set('payment.amount', $totalPrice); // Update total price
+                                              }
+                                          }
                                     }),
                             ])
                         ]),

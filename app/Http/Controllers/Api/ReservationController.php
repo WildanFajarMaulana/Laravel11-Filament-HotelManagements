@@ -20,7 +20,7 @@ class ReservationController extends Controller
             'room_id' => 'required|exists:rooms,id',
             'check_in_date' => 'required|date|after_or_equal:today',
             'check_out_date' => 'required|date|after:check_in_date',
-            'payment_method' => 'required|string|in:credit_card,bank_transfer,cash',
+            'payment_method' => 'required|string|in:manual,midtrans',
             'payment_status' => 'required|boolean',
             'proof' => 'nullable|file|mimes:jpg,png,pdf|max:2048', // File upload proof
         ]);
@@ -57,7 +57,7 @@ class ReservationController extends Controller
             // Menyimpan file proof pembayaran jika ada
             $proofPath = null;
             if ($request->hasFile('proof')) {
-                $proofPath = $request->file('proof')->store('payments/proofs', 'public');
+                $proofPath = $request->file('proof')->store('proofs', 'public');
             }
 
             // Membuat Payment terkait dengan Reservation
@@ -101,7 +101,7 @@ class ReservationController extends Controller
         }
 
         // Ambil riwayat reservasi berdasarkan user_id
-        $reservations = Reservation::with('room.reviews') // Memuat relasi room
+        $reservations = Reservation::with(['room.reviews', 'payment']) // Memuat relasi room
                                     ->where('user_id', $userId)
                                     ->orderBy('created_at', 'desc') // Urutkan berdasarkan tanggal pembuatan
                                     ->get();
@@ -136,13 +136,13 @@ class ReservationController extends Controller
             ], 403);
         }
 
-        // Cek apakah check-in belum dilakukan
-        $checkInDate = strtotime($reservation->check_in_date);
-        if ($checkInDate <= time()) {
-            return response()->json([
-                'message' => 'Cannot cancel the reservation. Check-in date has passed.',
-            ], 400);
-        }
+        // // Cek apakah check-in belum dilakukan
+        // $checkInDate = strtotime($reservation->check_in_date);
+        // if ($checkInDate <= time()) {
+        //     return response()->json([
+        //         'message' => 'Cannot cancel the reservation. Check-in date has passed.',
+        //     ], 400);
+        // }
 
         // Update status reservasi menjadi 'canceled'
         $reservation->reservation_status = 'canceled';
