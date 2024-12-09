@@ -33,9 +33,11 @@ class RoomController extends Controller
     public function roomDetail($slug)
     {
         // Ambil detail kamar berdasarkan slug
-        $room = Room::with(['roomFacilitys', 'roomAvaibilitys', 'reviews.user'])
-            ->where('room_slug', $slug)
-            ->first();
+          $room = Room::with(['roomFacilitys', 'roomAvaibilitys', 'reviews.user' => function($query) {
+        $query->withTrashed(); // Ambil juga yang sudah di-soft delete
+    }])
+        ->where('room_slug', $slug)
+        ->first();
 
         if (!$room) {
             return response()->json([

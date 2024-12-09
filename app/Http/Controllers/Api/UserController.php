@@ -20,6 +20,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|max:255',
             'password' => 'required|string|min:8|confirmed', // 'password_confirmation' field required
         ]);
 
@@ -35,6 +36,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'role' => 'customer', // Set role otomatis ke 'customer'
         ]);
