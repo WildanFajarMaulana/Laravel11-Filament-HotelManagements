@@ -349,7 +349,7 @@ class ReservationResource extends Resource
                             // Staff can see the button if reservation_status is 'confirmed' 
                             // and check_in_date is today
                             return $record->reservation_status === 'confirmed'
-                                && $record->check_in_date >= now()->format('Y-m-d')
+                                &&  now()->format('Y-m-d') >= $record->check_in_date 
                                 && $record->staffTasks()->where('task_type', 'Checked-in')
                                 ->where('user_id', $user->id) // Check for the current logged-in user
                                 ->exists();
@@ -389,7 +389,7 @@ class ReservationResource extends Resource
                             // Staff can see the button only if the reservation is 'checked-in' 
                             // and there is a 'Checked-out' task assigned
                             return $record->reservation_status === 'checked-in'
-                                && $record->check_out_date >= now()->format('Y-m-d')
+                                && now()->format('Y-m-d') >=  $record->check_out_date 
                                 && $record->staffTasks()->where('task_type', 'Checked-out')
                                 ->where('user_id', $user->id) // Check for the current logged-in user
                                 ->exists();
